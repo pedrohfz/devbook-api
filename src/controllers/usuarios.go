@@ -15,7 +15,7 @@ func BuscarUsuario(w http.ResponseWriter, r *http.Request) {
 }
 
 func AtualizarUsuario(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Criando usuário!"))
+	w.Write([]byte("Atualizando os usuário!"))
 }
 
 func DeletarUsuario(w http.ResponseWriter, r *http.Request) {

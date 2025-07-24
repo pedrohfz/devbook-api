@@ -2,6 +2,7 @@ package main
 
 import (
 	"devbook-api/src/router"
+	"fmt"
 	"log"
 	"net/http"
 )
@@ -9,5 +10,6 @@ import (
 func main() {
 	r := router.Gerar()
 
-	log.Fatal(http.ListenAndServe(":5000", r))
+	fmt.Println("Servidor rodando e escutando na porta :8000")
+	log.Fatal(http.ListenAndServe(":8000", r))
 }
