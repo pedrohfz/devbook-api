@@ -10,10 +10,14 @@ import (
 )
 
 var (
+	// StringConexaoBanco é a string de conexão com o MySQL.
 	StringConexaoBanco = ""
+
+	// Porta onde a API vai estar rodando.
 	Porta              = 0
 )
 
+// Carregar inicializa as variáveis de ambiente.
 func Carregar() {
 	var err error
 

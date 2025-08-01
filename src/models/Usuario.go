@@ -2,6 +2,7 @@ package models
 
 import "time"
 
+// Usuario representa os campos de todos os usuários da aplicação.
 type Usuario struct {
 	ID       uint64    `json:"id"`
 	Nome     string    `json:"nome"`
