@@ -4,10 +4,9 @@ import (
 	"devbook-api/src/data"
 	"devbook-api/src/models"
 	"devbook-api/src/repository"
+	"devbook-api/src/utils"
 	"encoding/json"
-	"fmt"
 	"io"
-	"log"
 	"net/http"
 )
 
@@ -15,26 +14,30 @@ import (
 func CriarUsuario(w http.ResponseWriter, r *http.Request) {
 	corpoRequest, err := io.ReadAll(r.Body)
 	if err != nil {
-		log.Fatal(err)
+		utils.Erro(w, http.StatusUnprocessableEntity, err)
+		return
 	}
 
 	var usuario models.Usuario
 	if err = json.Unmarshal(corpoRequest, &usuario); err != nil {
-		log.Fatal(err)
+		utils.Erro(w, http.StatusBadRequest, err)
 	}
 
 	db, err := data.Conectar()
 	if err != nil {
-		log.Fatal(err)
+		utils.Erro(w, http.StatusInternalServerError, err)
+		return
 	}
+
+	defer db.Close()
 
 	repositorio := repository.NovoRepositorioDeUsuarios(db)
-	usuarioID, err := repositorio.Criar(usuario)
+	usuario.ID, err = repositorio.Criar(usuario)
 	if err != nil {
-		log.Fatal(err)
+		utils.Erro(w, http.StatusInternalServerError, err)
 	}
 
-	w.Write([]byte(fmt.Sprintf("ID inserido: %d", usuarioID)))
+	utils.JSON(w, http.StatusCreated, usuario)
 }
 
 // BuscarUsuarios busca todos os usuários salvos no banco de dados.
