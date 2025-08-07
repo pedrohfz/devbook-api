@@ -8,12 +8,12 @@ import (
 
 // Usuario representa os campos de todos os usuários da aplicação.
 type Usuario struct {
-	ID       uint64    `json:"id"`
-	Nome     string    `json:"nome"`
-	Nick     string    `json:"nick"`
-	Email    string    `json:"email"`
-	Senha    string    `json:"senha"`
-	CriadoEm time.Time `json:"CriadoEm"`
+	ID       uint64    `json:"id,omitempty"`
+	Nome     string    `json:"nome,omitempty"`
+	Nick     string    `json:"nick,omitempty"`
+	Email    string    `json:"email,omitempty"`
+	Senha    string    `json:"senha,omitempty"`
+	CriadoEm time.Time `json:"CriadoEm,omitempty"`
 }
 
 // Preparar vai chamar os métodos para validar e formatar o usuário recebido.

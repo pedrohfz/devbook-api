@@ -19,19 +19,19 @@ var rotasUsuarios = []Rota{
 		Authentication: false,
 	},
 	{
-		URI:            "/usuarios/{usuarioId}",
+		URI:            "/usuarios/{usuarioID}",
 		Method:         http.MethodGet,
 		Function:       controllers.BuscarUsuario,
 		Authentication: false,
 	},
 	{
-		URI:            "/usuarios/{usuarioId}",
+		URI:            "/usuarios/{usuarioID}",
 		Method:         http.MethodPut,
 		Function:       controllers.AtualizarUsuario,
 		Authentication: false,
 	},
 	{
-		URI:            "/usuarios/{usuarioId}",
+		URI:            "/usuarios/{usuarioID}",
 		Method:         http.MethodDelete,
 		Function:       controllers.DeletarUsuario,
 		Authentication: false,
