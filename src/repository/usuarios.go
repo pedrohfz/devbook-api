@@ -100,3 +100,20 @@ func (u Usuarios) BuscarPorID(ID uint64) (models.Usuario, error) {
 
 	return usuario, nil
 }
+
+// Atualizar altera as informações de um usuário no banco de dados.
+func (u Usuarios) Atualizar(ID uint64, usuario models.Usuario) error {
+	statement, err := u.db.Prepare(
+		"update usuarios set nome = ?, nick = ?, email = ? where id = ?",
+	)
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err = statement.Exec(usuario.Nome, usuario.Nick, usuario.Email, ID); err != nil {
+		return err
+	}
+
+	return nil
+}

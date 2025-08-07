@@ -7,6 +7,7 @@ import (
 	"devbook-api/src/utils"
 	"encoding/json"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
@@ -27,7 +28,7 @@ func CriarUsuario(w http.ResponseWriter, r *http.Request) {
 		utils.Erro(w, http.StatusBadRequest, err)
 	}
 
-	if err = usuario.Preparar(); err != nil {
+	if err = usuario.Preparar("cadastro"); err != nil {
 		utils.Erro(w, http.StatusBadRequest, err)
 		return
 	}
@@ -99,7 +100,44 @@ func BuscarUsuario(w http.ResponseWriter, r *http.Request) {
 
 // AtualizarUsuario altera as informações de um único usuário no banco de dados.
 func AtualizarUsuario(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Atualizando os usuário!"))
+	param := mux.Vars(r)
+	usuarioID, err := strconv.ParseUint(param["usuarioID"], 10, 64)
+	if err != nil {
+		utils.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	corpoRequisicao, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		utils.Erro(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+
+	var usuario models.Usuario
+	if err = json.Unmarshal(corpoRequisicao, &usuario); err != nil {
+		utils.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if err = usuario.Preparar("edicao"); err != nil {
+		utils.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := data.Conectar()
+	if err != nil {
+		utils.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repositorio := repository.NovoRepositorioDeUsuarios(db)
+	if err = repositorio.Atualizar(usuarioID, usuario); err != nil {
+		utils.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	utils.JSON(w, http.StatusNoContent, nil)
 }
 
 // DeletarUsuario exclui um único usuário no banco de dados.
