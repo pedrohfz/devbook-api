@@ -134,3 +134,22 @@ func (u Usuarios) Deletar(ID uint64) error {
 
 	return nil
 }
+
+// BuscarPorEmail busca um usuário por email e retorna o seu ID e senha com hash.
+func (u Usuarios) BuscarPorEmail(email string) (models.Usuario, error) {
+	linha, err := u.db.Query(
+		"select id, senha from usuarios where email = ?",
+		email,
+	)
+	defer linha.Close()
+
+	var usuario models.Usuario
+
+	if linha.Next() {
+		if err = linha.Scan(&usuario.ID, &usuario.Senha); err != nil {
+			return models.Usuario{}, err
+		}
+	}
+
+	return usuario, nil
+}
