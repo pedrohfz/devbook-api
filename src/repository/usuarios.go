@@ -117,3 +117,20 @@ func (u Usuarios) Atualizar(ID uint64, usuario models.Usuario) error {
 
 	return nil
 }
+
+// Deletar excluí as informações de um usuário no banco de dados.
+func (u Usuarios) Deletar(ID uint64) error {
+	statement, err := u.db.Prepare(
+		"delete from usuarios where id = ?",
+	)
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err := statement.Exec(ID); err != nil {
+		return err
+	}
+
+	return nil
+}

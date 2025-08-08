@@ -7,7 +7,6 @@ import (
 	"devbook-api/src/utils"
 	"encoding/json"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
@@ -107,7 +106,7 @@ func AtualizarUsuario(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	corpoRequisicao, err := ioutil.ReadAll(r.Body)
+	corpoRequisicao, err := io.ReadAll(r.Body)
 	if err != nil {
 		utils.Erro(w, http.StatusUnprocessableEntity, err)
 		return
@@ -142,5 +141,25 @@ func AtualizarUsuario(w http.ResponseWriter, r *http.Request) {
 
 // DeletarUsuario exclui um único usuário no banco de dados.
 func DeletarUsuario(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Deletando usuário!"))
+	param := mux.Vars(r)
+	usuarioID, err := strconv.ParseUint(param["usuarioID"], 10, 64)
+	if err != nil {
+		utils.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := data.Conectar()
+	if err != nil {
+		utils.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repositorio := repository.NovoRepositorioDeUsuarios(db)
+	if err = repositorio.Deletar(usuarioID); err != nil {
+		utils.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	utils.JSON(w, http.StatusNoContent, nil)
 }
