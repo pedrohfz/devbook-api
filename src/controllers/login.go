@@ -1,12 +1,14 @@
 package controllers
 
 import (
+	"devbook-api/src/auth"
 	"devbook-api/src/data"
 	"devbook-api/src/models"
 	"devbook-api/src/repository"
 	"devbook-api/src/security"
 	"devbook-api/src/utils"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 )
@@ -44,5 +46,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Write([]byte("Você está logado!"))
+	token, _ := auth.CriarToken(usuarioSalvoNoBanco.ID)
+	// TODO: Função para realizar a autenticação do Token e adicionar Validações de Métodos
+
+	fmt.Println(token)
 }
