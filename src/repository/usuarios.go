@@ -141,6 +141,9 @@ func (u Usuarios) BuscarPorEmail(email string) (models.Usuario, error) {
 		"select id, senha from usuarios where email = ?",
 		email,
 	)
+	if err != nil {
+		return models.Usuario{}, err
+	}
 	defer linha.Close()
 
 	var usuario models.Usuario
