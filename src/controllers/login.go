@@ -8,7 +8,6 @@ import (
 	"devbook-api/src/security"
 	"devbook-api/src/utils"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 )
@@ -46,8 +45,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, _ := auth.CriarToken(usuarioSalvoNoBanco.ID)
-	// TODO: Função para realizar a autenticação do Token e adicionar Validações de Métodos
+	token, err := auth.CriarToken(usuarioSalvoNoBanco.ID)
+	if err != nil {
+		utils.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
 
-	fmt.Println(token)
+	w.Write([]byte(token))
 }
