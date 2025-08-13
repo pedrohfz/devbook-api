@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"devbook-api/src/config"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
@@ -14,6 +15,5 @@ func CriarToken(usuarioID uint64) (string, error) {
 	perm["usuarioID"] = usuarioID
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, perm)
 
-	// TODO: Gerar uma chave Secret:
-	return token.SignedString([]byte("Secret"))
+	return token.SignedString([]byte(config.SecretKey))
 }
