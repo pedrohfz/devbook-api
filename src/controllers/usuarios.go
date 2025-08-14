@@ -1,11 +1,13 @@
 package controllers
 
 import (
+	"devbook-api/src/auth"
 	"devbook-api/src/data"
 	"devbook-api/src/models"
 	"devbook-api/src/repository"
 	"devbook-api/src/utils"
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"strconv"
@@ -103,6 +105,17 @@ func AtualizarUsuario(w http.ResponseWriter, r *http.Request) {
 	usuarioID, err := strconv.ParseUint(param["usuarioID"], 10, 64)
 	if err != nil {
 		utils.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	usuarioIDNoToken, err := auth.ExtrairUsuarioID(r)
+	if err != nil {
+		utils.Erro(w, http.StatusUnauthorized, err)
+		return
+	}
+
+	if usuarioID != usuarioIDNoToken {
+		utils.Erro(w, http.StatusForbidden, errors.New("Não é possível atualizar um usuário que não seja o seu"))
 		return
 	}
 

@@ -16,7 +16,7 @@ type Usuario struct {
 	Nick     string    `json:"nick,omitempty"`
 	Email    string    `json:"email,omitempty"`
 	Senha    string    `json:"senha,omitempty"`
-	CriadoEm time.Time `json:"CriadoEm,omitempty"`
+	CriadoEm time.Time `json:"CriadoEm,omitzero"`
 }
 
 // Preparar vai chamar os métodos para validar e formatar o usuário recebido.

@@ -51,5 +51,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// TODO: Responde da rota de Login. POST /login
 	w.Write([]byte(token))
 }
