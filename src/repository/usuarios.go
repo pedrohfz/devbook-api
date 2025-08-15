@@ -190,3 +190,36 @@ func (u Usuarios) DeixarDeSeguir(usuarioID, seguidorID uint64) error {
 
 	return nil
 }
+
+// BuscarSeguidores traz todos os seguidores de um usuário.
+func (u Usuarios) BuscarSeguidores(usuarioID uint64) ([]models.Usuario, error) {
+	linhas, err := u.db.Query(`
+		select u.id, u.nome, u.nick, u.email, u.criadoEm
+		from usuarios u inner join seguidores s on u.id = s.seguidor_id where s.usuario_id = ?`,
+		usuarioID,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer linhas.Close()
+
+	var usuarios []models.Usuario
+
+	for linhas.Next() {
+		var usuario models.Usuario
+
+		if err = linhas.Scan(
+			&usuario.ID,
+			&usuario.Nome,
+			&usuario.Nick,
+			&usuario.Email,
+			&usuario.CriadoEm,
+		); err != nil {
+			return nil, err
+		}
+
+		usuarios = append(usuarios, usuario)
+	}
+
+	return usuarios, nil
+}
