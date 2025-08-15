@@ -173,3 +173,20 @@ func (u Usuarios) Seguir(usuarioID, seguidorID uint64) error {
 
 	return nil
 }
+
+// DeixarDeSeguir permite que um usuário pare de seguir o outro.
+func (u Usuarios) DeixarDeSeguir(usuarioID, seguidorID uint64) error {
+	statement, err := u.db.Prepare(
+		"delete from seguidores where usuario_id = ? and seguidor_id = ?",
+	)
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err := statement.Exec(usuarioID, seguidorID); err != nil {
+		return err
+	}
+
+	return nil
+}
