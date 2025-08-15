@@ -223,3 +223,36 @@ func (u Usuarios) BuscarSeguidores(usuarioID uint64) ([]models.Usuario, error) {
 
 	return usuarios, nil
 }
+
+// BuscarSeguindo traz todos os usuários que um determinado usuário está seguindo.
+func (u Usuarios) BuscarSeguindo(usuarioID uint64) ([]models.Usuario, error) {
+	linhas, err := u.db.Query(`
+		select u.id, u.nome, u.nick, u.email, u.criadoEm
+		from usuarios u inner join seguidores s on u.id = s.usuario_id where s.seguidor_id = ?`,
+		usuarioID,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer linhas.Close()
+
+	var usuarios []models.Usuario
+
+	for linhas.Next() {
+		var usuario models.Usuario
+
+		if err = linhas.Scan(
+			&usuario.ID,
+			&usuario.Nome,
+			&usuario.Nick,
+			&usuario.Email,
+			&usuario.CriadoEm,
+		); err != nil {
+			return nil, err
+		}
+
+		usuarios = append(usuarios, usuario)
+	}
+
+	return usuarios, nil
+}
