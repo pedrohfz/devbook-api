@@ -256,3 +256,41 @@ func (u Usuarios) BuscarSeguindo(usuarioID uint64) ([]models.Usuario, error) {
 
 	return usuarios, nil
 }
+
+// BuscarSenha traz a senha de um usuário pelo ID.
+func (u Usuarios) BuscarSenha(usuarioID uint64) (string, error) {
+	linha, err := u.db.Query(
+		"select senha from usuarios where id = ?",
+	)
+	if err != nil {
+		return "", err
+	}
+	defer linha.Close()
+
+	var usuario models.Usuario
+
+	if linha.Next() {
+		if err = linha.Scan(&usuario.Senha); err != nil {
+			return "", err
+		}
+	}
+
+	return usuario.Senha, nil
+}
+
+// AtualizarSenha altera a senha de um usuário.
+func (u Usuarios) AtualizarSenha(usuarioID uint64, senha string) error {
+	statement, err := u.db.Prepare(
+		"update usuarios set senha = ? where id = ?",
+	)
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err = statement.Exec(senha, usuarioID); err != nil {
+		return err
+	}
+
+	return nil
+}

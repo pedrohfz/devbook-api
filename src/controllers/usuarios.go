@@ -5,6 +5,7 @@ import (
 	"devbook-api/src/data"
 	"devbook-api/src/models"
 	"devbook-api/src/repository"
+	"devbook-api/src/security"
 	"devbook-api/src/utils"
 	"encoding/json"
 	"errors"
@@ -310,4 +311,65 @@ func BuscarSeguindo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.JSON(w, http.StatusOK, usuarios)
+}
+
+// AtualizarSenha permite o alterar a senha de um usuário.
+func AtualizarSenha(w http.ResponseWriter, r *http.Request) {
+	usuarioIDNoToken, err := auth.ExtrairUsuarioID(r)
+	if err != nil {
+		utils.Erro(w, http.StatusUnauthorized, err)
+		return
+	}
+
+	param := mux.Vars(r)
+	usuarioID, err := strconv.ParseUint(param["usuarioID"], 10, 64)
+	if err != nil {
+		utils.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if usuarioIDNoToken != usuarioID {
+		utils.Erro(w, http.StatusForbidden, errors.New("Não é possível atualizar a senha de um usuário que não seja o seu!"))
+		return
+	}
+
+	corpoRequisicao, err := io.ReadAll(r.Body)
+	
+	var senha models.Senha
+	if err = json.Unmarshal(corpoRequisicao, &senha); err != nil {
+		utils.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := data.Conectar()
+	if err != nil {
+		utils.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repositorio := repository.NovoRepositorioDeUsuarios(db)
+	senhaSalvaNoBanco, err := repositorio.BuscarSenha(usuarioID)
+	if err != nil {
+		utils.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	if err = security.VerificarSenha(senhaSalvaNoBanco, senha.Atual); err != nil {
+		utils.Erro(w, http.StatusUnauthorized, errors.New("A senha atual não condiz com a que está salva no banco!"))
+		return
+	}
+
+	senhaComHash, err := security.Hash(senha.Nova)
+	if err != nil {
+		utils.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if err = repositorio.AtualizarSenha(usuarioID, string(senhaComHash)); err != nil {
+		utils.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	utils.JSON(w, http.StatusNoContent, nil)
 }
