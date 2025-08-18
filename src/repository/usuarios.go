@@ -261,6 +261,7 @@ func (u Usuarios) BuscarSeguindo(usuarioID uint64) ([]models.Usuario, error) {
 func (u Usuarios) BuscarSenha(usuarioID uint64) (string, error) {
 	linha, err := u.db.Query(
 		"select senha from usuarios where id = ?",
+		usuarioID,
 	)
 	if err != nil {
 		return "", err
