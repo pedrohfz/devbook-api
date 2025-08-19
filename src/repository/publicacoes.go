@@ -123,3 +123,20 @@ func (p Publicacoes) Atualizar(publicacaoID uint64, publicacao models.Publicacao
 
 	return nil
 }
+
+// Deletar excluí uma publicação do banco de dados.
+func (p Publicacoes) Deletar(publicacaoID uint64) error {
+	statement, err := p.db.Prepare(
+		"delete from publicacoes where id = ?",
+	)
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err = statement.Exec(publicacaoID); err != nil {
+		return err
+	}
+
+	return nil
+}

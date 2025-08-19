@@ -171,4 +171,43 @@ func AtualizarPublicacao(w http.ResponseWriter, r *http.Request) {
 }
 
 // DeletarPublicacao exclui os dados de uma publicação.
-func DeletarPublicacao(w http.ResponseWriter, r *http.Request) {}
+func DeletarPublicacao(w http.ResponseWriter, r *http.Request) {
+	usuarioID, err := auth.ExtrairUsuarioID(r)
+	if err != nil {
+		utils.Erro(w, http.StatusUnauthorized, err)
+		return
+	}
+
+	param := mux.Vars(r)
+	publicacaoID, err := strconv.ParseUint(param["publicacaoID"], 10, 64)
+	if err != nil {
+		utils.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := data.Conectar()
+	if err != nil {
+		utils.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+	defer db.Close()
+
+	repositorio := repository.NovoRepositorioDePublicacoes(db)
+	publicacoesSalvaNoBanco, err := repositorio.BuscarPorID(publicacaoID)
+	if err != nil {
+		utils.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	if publicacoesSalvaNoBanco.AutorID != usuarioID {
+		utils.Erro(w, http.StatusForbidden, errors.New("Não é possível deletar uma publicação que não seja sua!"))
+		return
+	}
+
+	if err = repositorio.Deletar(publicacaoID); err != nil {
+		utils.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	utils.JSON(w, http.StatusNoContent, nil)
+}
