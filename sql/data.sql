@@ -1,5 +1,5 @@
-    CREATE DATABASE IF NOT EXISTS devbook;
-    USE devbook;
+CREATE DATABASE IF NOT EXISTS devbook;
+USE devbook;
 
 DROP TABLE IF EXISTS publicacoes;
 DROP TABLE IF EXISTS seguidores;
@@ -38,7 +38,6 @@ CREATE TABLE publicacoes(
     criadaEm timestamp default current_timestamp
 );
 
-
 insert into usuarios(nome, nick, email, senha)
 values
 ("Pedrinho", "pedrinho", "pedrinho@gmail.com", "$2a$10$yB0Ap1HM/Bl3RkrpzmncRe6MzeVKf5csYhFEe5b4VBum9vqI38I3K"),
@@ -50,3 +49,9 @@ values
 (1, 2),
 (3, 1),
 (1, 3);
+
+insert into publicacoes(titulo, conteudo, autor_id)
+values
+("Primeira Publicação", "Hello, World! My name is Pedrinho!", 1),
+("Segunda Publicação", "Hello, World! My name is Julia!", 2),
+("Terceira Publicação", "Hello, World! My name is Mock User!", 3);
