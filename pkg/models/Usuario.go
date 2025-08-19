@@ -1,7 +1,7 @@
 package models
 
 import (
-	"devbook-api/src/security"
+	"devbook-api/internal/security"
 	"errors"
 	"strings"
 	"time"

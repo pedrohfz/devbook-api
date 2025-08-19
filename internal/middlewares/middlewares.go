@@ -1,8 +1,8 @@
 package middlewares
 
 import (
-	"devbook-api/src/auth"
-	"devbook-api/src/utils"
+	"devbook-api/internal/auth"
+	"devbook-api/pkg/utils"
 	"log"
 	"net/http"
 )

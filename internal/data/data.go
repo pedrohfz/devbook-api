@@ -2,7 +2,7 @@ package data
 
 import (
 	"database/sql"
-	"devbook-api/src/config"
+	"devbook-api/internal/config"
 
 	_ "github.com/go-sql-driver/mysql"
 )

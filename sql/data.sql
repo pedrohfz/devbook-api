@@ -43,6 +43,7 @@ values
 ("Pedrinho", "pedrinho", "pedrinho@gmail.com", "$2a$10$yB0Ap1HM/Bl3RkrpzmncRe6MzeVKf5csYhFEe5b4VBum9vqI38I3K"),
 ("Julia", "julia", "julia@gmail.com", "$2a$10$2wBcmZZKdUU.ryhve04uMuKuUns.qrFb5nA0V13Pb4k8u4gpgmHTG"),
 ("Mock User", "mock", "mock@gmail.com", "$2a$10$mtxH87HOLtYcZkiSJFk7Re4PwJaOXiqBUuc9b.jmt.1.tHSWHq9ny");
+ $2a$10$GsXIMenXrfDzqBWG/o5NDOlrxVBA7iBE2./VJLo38z1u5tp6Sk1uG
 
 insert into seguidores(usuario_id, seguidor_id)
 values

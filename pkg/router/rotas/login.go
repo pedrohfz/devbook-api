@@ -1,7 +1,7 @@
 package rotas
 
 import (
-	"devbook-api/src/controllers"
+	"devbook-api/pkg/controllers"
 	"net/http"
 )
 

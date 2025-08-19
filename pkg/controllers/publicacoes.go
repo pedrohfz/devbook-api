@@ -1,11 +1,11 @@
 package controllers
 
 import (
-	"devbook-api/src/auth"
-	"devbook-api/src/data"
-	"devbook-api/src/models"
-	"devbook-api/src/repository"
-	"devbook-api/src/utils"
+	"devbook-api/internal/auth"
+	"devbook-api/internal/data"
+	"devbook-api/internal/repository"
+	"devbook-api/pkg/models"
+	"devbook-api/pkg/utils"
 	"encoding/json"
 	"errors"
 	"io"

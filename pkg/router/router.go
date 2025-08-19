@@ -1,7 +1,7 @@
 package router
 
 import (
-	"devbook-api/src/router/rotas"
+	"devbook-api/pkg/router/rotas"
 
 	"github.com/gorilla/mux"
 )

@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"devbook-api/src/config"
+	"devbook-api/internal/config"
 	"errors"
 	"fmt"
 	"net/http"

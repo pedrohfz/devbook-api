@@ -2,7 +2,7 @@ package repository
 
 import (
 	"database/sql"
-	"devbook-api/src/models"
+	"devbook-api/pkg/models"
 )
 
 // Publicacoes representa um repositório de publicações.

@@ -1,12 +1,12 @@
 package controllers
 
 import (
-	"devbook-api/src/auth"
-	"devbook-api/src/data"
-	"devbook-api/src/models"
-	"devbook-api/src/repository"
-	"devbook-api/src/security"
-	"devbook-api/src/utils"
+	"devbook-api/internal/auth"
+	"devbook-api/internal/data"
+	"devbook-api/internal/repository"
+	"devbook-api/internal/security"
+	"devbook-api/pkg/models"
+	"devbook-api/pkg/utils"
 	"encoding/json"
 	"errors"
 	"io"
@@ -334,7 +334,7 @@ func AtualizarSenha(w http.ResponseWriter, r *http.Request) {
 	}
 
 	corpoRequisicao, err := io.ReadAll(r.Body)
-	
+
 	var senha models.Senha
 	if err = json.Unmarshal(corpoRequisicao, &senha); err != nil {
 		utils.Erro(w, http.StatusBadRequest, err)
