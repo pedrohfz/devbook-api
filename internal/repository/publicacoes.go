@@ -16,8 +16,8 @@ func NovoRepositorioDePublicacoes(db *sql.DB) *Publicacoes {
 }
 
 // Criar insere uma publicação no banco de dados.
-func (p Publicacoes) Criar(publicacao models.Publicacao) (uint64, error) {
-	statement, err := p.db.Prepare(
+func (repo Publicacoes) Criar(publicacao models.Publicacao) (uint64, error) {
+	statement, err := repo.db.Prepare(
 		"insert into publicacoes (titulo, conteudo, autor_id) values (?, ?, ?)",
 	)
 	if err != nil {
@@ -39,8 +39,8 @@ func (p Publicacoes) Criar(publicacao models.Publicacao) (uint64, error) {
 }
 
 // BuscarPorID traz uma única publicação do banco de dados.
-func (p Publicacoes) BuscarPorID(publicacaoID uint64) (models.Publicacao, error) {
-	linha, err := p.db.Query(`
+func (repo Publicacoes) BuscarPorID(publicacaoID uint64) (models.Publicacao, error) {
+	linha, err := repo.db.Query(`
 		select p.*, u.nick from
 		publicacoes p inner join usuarios u
 		on u.id = p.autor_id where p.id = ?`,
@@ -70,8 +70,8 @@ func (p Publicacoes) BuscarPorID(publicacaoID uint64) (models.Publicacao, error)
 	return publicacao, nil
 }
 
-func (repositorio Publicacoes) Buscar(usuarioID uint64) ([]models.Publicacao, error) {
-	linhas, erro := repositorio.db.Query(`
+func (repo Publicacoes) Buscar(usuarioID uint64) ([]models.Publicacao, error) {
+	linhas, erro := repo.db.Query(`
 	select distinct p.*, u.nick from publicacoes p 
 	inner join usuarios u on u.id = p.autor_id 
 	inner join seguidores s on p.autor_id = s.usuario_id 
@@ -108,8 +108,8 @@ func (repositorio Publicacoes) Buscar(usuarioID uint64) ([]models.Publicacao, er
 }
 
 // Atualizar altera os dados de uma publicação no banco de dados.
-func (p Publicacoes) Atualizar(publicacaoID uint64, publicacao models.Publicacao) error {
-	statement, err := p.db.Prepare(
+func (repo Publicacoes) Atualizar(publicacaoID uint64, publicacao models.Publicacao) error {
+	statement, err := repo.db.Prepare(
 		"update publicacoes set titulo = ?, conteudo = ? where id = ?",
 	)
 	if err != nil {
@@ -125,8 +125,8 @@ func (p Publicacoes) Atualizar(publicacaoID uint64, publicacao models.Publicacao
 }
 
 // Deletar excluí uma publicação do banco de dados.
-func (p Publicacoes) Deletar(publicacaoID uint64) error {
-	statement, err := p.db.Prepare(
+func (repo Publicacoes) Deletar(publicacaoID uint64) error {
+	statement, err := repo.db.Prepare(
 		"delete from publicacoes where id = ?",
 	)
 	if err != nil {

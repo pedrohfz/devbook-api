@@ -17,8 +17,8 @@ func NovoRepositorioDeUsuarios(db *sql.DB) *Usuarios {
 }
 
 // Criar insere um usuário no banco de dados.
-func (u Usuarios) Criar(usuario models.Usuario) (uint64, error) {
-	statement, err := u.db.Prepare(
+func (repo Usuarios) Criar(usuario models.Usuario) (uint64, error) {
+	statement, err := repo.db.Prepare(
 		"insert into usuarios (nome, nick, email, senha) values (?, ?, ?, ?)",
 	)
 	if err != nil {
@@ -40,10 +40,10 @@ func (u Usuarios) Criar(usuario models.Usuario) (uint64, error) {
 }
 
 // Buscar traz todos os usuários que atendem um filtro de nome ou nick.
-func (u Usuarios) Buscar(nomeOuNick string) ([]models.Usuario, error) {
-	nomeOuNick = fmt.Sprintf("%%%s%%", nomeOuNick) // %nomeOuNick%
+func (repo Usuarios) Buscar(nomeOuNick string) ([]models.Usuario, error) {
+	nomeOuNick = fmt.Sprintf("%%%s%%", nomeOuNick)
 
-	linhas, err := u.db.Query(
+	linhas, err := repo.db.Query(
 		"select id, nome, nick, email, criadoEm from usuarios where nome LIKE ? or nick LIKE ?",
 		nomeOuNick, nomeOuNick,
 	)
@@ -74,8 +74,8 @@ func (u Usuarios) Buscar(nomeOuNick string) ([]models.Usuario, error) {
 	return usuarios, nil
 }
 
-func (u Usuarios) BuscarPorID(ID uint64) (models.Usuario, error) {
-	linhas, err := u.db.Query(
+func (repo Usuarios) BuscarPorID(ID uint64) (models.Usuario, error) {
+	linhas, err := repo.db.Query(
 		"select id, nome, nick, email, criadoEm from usuarios where id = ?",
 		ID,
 	)
@@ -102,8 +102,8 @@ func (u Usuarios) BuscarPorID(ID uint64) (models.Usuario, error) {
 }
 
 // Atualizar altera as informações de um usuário no banco de dados.
-func (u Usuarios) Atualizar(ID uint64, usuario models.Usuario) error {
-	statement, err := u.db.Prepare(
+func (repo Usuarios) Atualizar(ID uint64, usuario models.Usuario) error {
+	statement, err := repo.db.Prepare(
 		"update usuarios set nome = ?, nick = ?, email = ? where id = ?",
 	)
 	if err != nil {
@@ -119,8 +119,8 @@ func (u Usuarios) Atualizar(ID uint64, usuario models.Usuario) error {
 }
 
 // Deletar excluí as informações de um usuário no banco de dados.
-func (u Usuarios) Deletar(ID uint64) error {
-	statement, err := u.db.Prepare(
+func (repo Usuarios) Deletar(ID uint64) error {
+	statement, err := repo.db.Prepare(
 		"delete from usuarios where id = ?",
 	)
 	if err != nil {
@@ -136,8 +136,8 @@ func (u Usuarios) Deletar(ID uint64) error {
 }
 
 // BuscarPorEmail busca um usuário por email e retorna o seu ID e senha com hash.
-func (u Usuarios) BuscarPorEmail(email string) (models.Usuario, error) {
-	linha, err := u.db.Query(
+func (repo Usuarios) BuscarPorEmail(email string) (models.Usuario, error) {
+	linha, err := repo.db.Query(
 		"select id, senha from usuarios where email = ?",
 		email,
 	)
@@ -158,8 +158,8 @@ func (u Usuarios) BuscarPorEmail(email string) (models.Usuario, error) {
 }
 
 // Seguir permite que um usuário siga outro.
-func (u Usuarios) Seguir(usuarioID, seguidorID uint64) error {
-	statement, err := u.db.Prepare(
+func (repo Usuarios) Seguir(usuarioID, seguidorID uint64) error {
+	statement, err := repo.db.Prepare(
 		"insert ignore into seguidores (usuario_id, seguidor_id) values (?, ?)",
 	)
 	if err != nil {
@@ -175,8 +175,8 @@ func (u Usuarios) Seguir(usuarioID, seguidorID uint64) error {
 }
 
 // DeixarDeSeguir permite que um usuário pare de seguir o outro.
-func (u Usuarios) DeixarDeSeguir(usuarioID, seguidorID uint64) error {
-	statement, err := u.db.Prepare(
+func (repo Usuarios) DeixarDeSeguir(usuarioID, seguidorID uint64) error {
+	statement, err := repo.db.Prepare(
 		"delete from seguidores where usuario_id = ? and seguidor_id = ?",
 	)
 	if err != nil {
@@ -192,8 +192,8 @@ func (u Usuarios) DeixarDeSeguir(usuarioID, seguidorID uint64) error {
 }
 
 // BuscarSeguidores traz todos os seguidores de um usuário.
-func (u Usuarios) BuscarSeguidores(usuarioID uint64) ([]models.Usuario, error) {
-	linhas, err := u.db.Query(`
+func (repo Usuarios) BuscarSeguidores(usuarioID uint64) ([]models.Usuario, error) {
+	linhas, err := repo.db.Query(`
 		select u.id, u.nome, u.nick, u.email, u.criadoEm
 		from usuarios u inner join seguidores s on u.id = s.seguidor_id where s.usuario_id = ?`,
 		usuarioID,
@@ -225,8 +225,8 @@ func (u Usuarios) BuscarSeguidores(usuarioID uint64) ([]models.Usuario, error) {
 }
 
 // BuscarSeguindo traz todos os usuários que um determinado usuário está seguindo.
-func (u Usuarios) BuscarSeguindo(usuarioID uint64) ([]models.Usuario, error) {
-	linhas, err := u.db.Query(`
+func (repo Usuarios) BuscarSeguindo(usuarioID uint64) ([]models.Usuario, error) {
+	linhas, err := repo.db.Query(`
 		select u.id, u.nome, u.nick, u.email, u.criadoEm
 		from usuarios u inner join seguidores s on u.id = s.usuario_id where s.seguidor_id = ?`,
 		usuarioID,
@@ -258,8 +258,8 @@ func (u Usuarios) BuscarSeguindo(usuarioID uint64) ([]models.Usuario, error) {
 }
 
 // BuscarSenha traz a senha de um usuário pelo ID.
-func (u Usuarios) BuscarSenha(usuarioID uint64) (string, error) {
-	linha, err := u.db.Query(
+func (repo Usuarios) BuscarSenha(usuarioID uint64) (string, error) {
+	linha, err := repo.db.Query(
 		"select senha from usuarios where id = ?",
 		usuarioID,
 	)
@@ -280,8 +280,8 @@ func (u Usuarios) BuscarSenha(usuarioID uint64) (string, error) {
 }
 
 // AtualizarSenha altera a senha de um usuário.
-func (u Usuarios) AtualizarSenha(usuarioID uint64, senha string) error {
-	statement, err := u.db.Prepare(
+func (repo Usuarios) AtualizarSenha(usuarioID uint64, senha string) error {
+	statement, err := repo.db.Prepare(
 		"update usuarios set senha = ? where id = ?",
 	)
 	if err != nil {

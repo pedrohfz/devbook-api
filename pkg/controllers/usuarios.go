@@ -40,11 +40,10 @@ func CriarUsuario(w http.ResponseWriter, r *http.Request) {
 		utils.Erro(w, http.StatusInternalServerError, err)
 		return
 	}
-
 	defer db.Close()
 
-	repositorio := repository.NovoRepositorioDeUsuarios(db)
-	usuario.ID, err = repositorio.Criar(usuario)
+	repo := repository.NovoRepositorioDeUsuarios(db)
+	usuario.ID, err = repo.Criar(usuario)
 	if err != nil {
 		utils.Erro(w, http.StatusInternalServerError, err)
 	}
@@ -63,8 +62,8 @@ func BuscarUsuarios(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	repositorio := repository.NovoRepositorioDeUsuarios(db)
-	usuarios, err := repositorio.Buscar(nomeOuNick)
+	repo := repository.NovoRepositorioDeUsuarios(db)
+	usuarios, err := repo.Buscar(nomeOuNick)
 	if err != nil {
 		utils.Erro(w, http.StatusInternalServerError, err)
 		return
@@ -76,7 +75,6 @@ func BuscarUsuarios(w http.ResponseWriter, r *http.Request) {
 // BuscarUsuario busca um único usuário salvo no banco de dados.
 func BuscarUsuario(w http.ResponseWriter, r *http.Request) {
 	param := mux.Vars(r)
-
 	usuarioID, err := strconv.ParseUint(param["usuarioID"], 10, 64)
 	if err != nil {
 		utils.Erro(w, http.StatusBadRequest, err)
@@ -90,8 +88,8 @@ func BuscarUsuario(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	repositorio := repository.NovoRepositorioDeUsuarios(db)
-	usuario, err := repositorio.BuscarPorID(usuarioID)
+	repo := repository.NovoRepositorioDeUsuarios(db)
+	usuario, err := repo.BuscarPorID(usuarioID)
 	if err != nil {
 		utils.Erro(w, http.StatusInternalServerError, err)
 		return
@@ -116,7 +114,7 @@ func AtualizarUsuario(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if usuarioID != usuarioIDNoToken {
-		utils.Erro(w, http.StatusForbidden, errors.New("Não é possível atualizar um usuário que não seja o seu"))
+		utils.Erro(w, http.StatusForbidden, errors.New("não é possível atualizar um usuário que não seja o seu"))
 		return
 	}
 
@@ -144,8 +142,8 @@ func AtualizarUsuario(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	repositorio := repository.NovoRepositorioDeUsuarios(db)
-	if err = repositorio.Atualizar(usuarioID, usuario); err != nil {
+	repo := repository.NovoRepositorioDeUsuarios(db)
+	if err = repo.Atualizar(usuarioID, usuario); err != nil {
 		utils.Erro(w, http.StatusInternalServerError, err)
 		return
 	}
@@ -169,7 +167,7 @@ func DeletarUsuario(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if usuarioID != usuarioIDNoToken {
-		utils.Erro(w, http.StatusForbidden, errors.New("Não é possível atualizar um usuário que não seja o seu"))
+		utils.Erro(w, http.StatusForbidden, errors.New("não é possível excluir um usuário que não seja o seu"))
 		return
 	}
 
@@ -180,8 +178,8 @@ func DeletarUsuario(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	repositorio := repository.NovoRepositorioDeUsuarios(db)
-	if err = repositorio.Deletar(usuarioID); err != nil {
+	repo := repository.NovoRepositorioDeUsuarios(db)
+	if err = repo.Deletar(usuarioID); err != nil {
 		utils.Erro(w, http.StatusInternalServerError, err)
 		return
 	}
@@ -205,7 +203,7 @@ func SeguirUsuario(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if seguidorID == usuarioID {
-		utils.Erro(w, http.StatusForbidden, errors.New("Não é possível você seguir a sua própria conta!"))
+		utils.Erro(w, http.StatusForbidden, errors.New("não é possível você seguir a sua própria conta"))
 		return
 	}
 
@@ -216,8 +214,8 @@ func SeguirUsuario(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	repositorio := repository.NovoRepositorioDeUsuarios(db)
-	if err = repositorio.Seguir(usuarioID, seguidorID); err != nil {
+	repo := repository.NovoRepositorioDeUsuarios(db)
+	if err = repo.Seguir(usuarioID, seguidorID); err != nil {
 		utils.Erro(w, http.StatusInternalServerError, err)
 		return
 	}
@@ -241,7 +239,7 @@ func DeixarDeSeguirUsuario(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if seguidorID == usuarioID {
-		utils.Erro(w, http.StatusForbidden, errors.New("Não é possível você deixar de seguir a sua própria conta!"))
+		utils.Erro(w, http.StatusForbidden, errors.New("não é possível você deixar de seguir a sua própria conta"))
 		return
 	}
 
@@ -252,8 +250,8 @@ func DeixarDeSeguirUsuario(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	repositorio := repository.NovoRepositorioDeUsuarios(db)
-	if err = repositorio.DeixarDeSeguir(usuarioID, seguidorID); err != nil {
+	repo := repository.NovoRepositorioDeUsuarios(db)
+	if err = repo.DeixarDeSeguir(usuarioID, seguidorID); err != nil {
 		utils.Erro(w, http.StatusInternalServerError, err)
 		return
 	}
@@ -277,8 +275,8 @@ func BuscarSeguidores(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	repositorio := repository.NovoRepositorioDeUsuarios(db)
-	seguidores, err := repositorio.BuscarSeguidores(usuarioID)
+	repo := repository.NovoRepositorioDeUsuarios(db)
+	seguidores, err := repo.BuscarSeguidores(usuarioID)
 	if err != nil {
 		utils.Erro(w, http.StatusInternalServerError, err)
 		return
@@ -303,8 +301,8 @@ func BuscarSeguindo(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	repositorio := repository.NovoRepositorioDeUsuarios(db)
-	usuarios, err := repositorio.BuscarSeguindo(usuarioID)
+	repo := repository.NovoRepositorioDeUsuarios(db)
+	usuarios, err := repo.BuscarSeguindo(usuarioID)
 	if err != nil {
 		utils.Erro(w, http.StatusInternalServerError, err)
 		return
@@ -329,11 +327,15 @@ func AtualizarSenha(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if usuarioIDNoToken != usuarioID {
-		utils.Erro(w, http.StatusForbidden, errors.New("Não é possível atualizar a senha de um usuário que não seja o seu!"))
+		utils.Erro(w, http.StatusForbidden, errors.New("não é possível atualizar a senha de um usuário que não seja o seu"))
 		return
 	}
 
 	corpoRequisicao, err := io.ReadAll(r.Body)
+	if err != nil {
+		utils.Erro(w, http.StatusUnprocessableEntity, err)
+		return
+	}
 
 	var senha models.Senha
 	if err = json.Unmarshal(corpoRequisicao, &senha); err != nil {
@@ -348,15 +350,15 @@ func AtualizarSenha(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	repositorio := repository.NovoRepositorioDeUsuarios(db)
-	senhaSalvaNoBanco, err := repositorio.BuscarSenha(usuarioID)
+	repo := repository.NovoRepositorioDeUsuarios(db)
+	senhaSalvaNoBanco, err := repo.BuscarSenha(usuarioID)
 	if err != nil {
 		utils.Erro(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	if err = security.VerificarSenha(senhaSalvaNoBanco, senha.Atual); err != nil {
-		utils.Erro(w, http.StatusUnauthorized, errors.New("A senha atual não condiz com a que está salva no banco!"))
+		utils.Erro(w, http.StatusUnauthorized, errors.New("a senha atual não condiz com a que está salva no banco"))
 		return
 	}
 
@@ -366,7 +368,7 @@ func AtualizarSenha(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = repositorio.AtualizarSenha(usuarioID, string(senhaComHash)); err != nil {
+	if err = repo.AtualizarSenha(usuarioID, string(senhaComHash)); err != nil {
 		utils.Erro(w, http.StatusInternalServerError, err)
 		return
 	}

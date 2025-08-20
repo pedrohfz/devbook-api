@@ -49,8 +49,8 @@ func CriarPublicacao(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	repositorio := repository.NovoRepositorioDePublicacoes(db)
-	publicacao.ID, err = repositorio.Criar(publicacao)
+	repo := repository.NovoRepositorioDePublicacoes(db)
+	publicacao.ID, err = repo.Criar(publicacao)
 	if err != nil {
 		utils.Erro(w, http.StatusInternalServerError, err)
 		return
@@ -74,8 +74,8 @@ func BuscarPublicacoes(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	repositorio := repository.NovoRepositorioDePublicacoes(db)
-	publicacoes, err := repositorio.Buscar(usuarioID)
+	repo := repository.NovoRepositorioDePublicacoes(db)
+	publicacoes, err := repo.Buscar(usuarioID)
 	if err != nil {
 		utils.Erro(w, http.StatusInternalServerError, err)
 		return
@@ -100,8 +100,8 @@ func BuscarPublicacao(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	repositorio := repository.NovoRepositorioDePublicacoes(db)
-	publicacao, err := repositorio.BuscarPorID(publicacaoID)
+	repo := repository.NovoRepositorioDePublicacoes(db)
+	publicacao, err := repo.BuscarPorID(publicacaoID)
 	if err != nil {
 		utils.Erro(w, http.StatusInternalServerError, err)
 		return
@@ -132,15 +132,15 @@ func AtualizarPublicacao(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	repositorio := repository.NovoRepositorioDePublicacoes(db)
-	publicacoesSalvaNoBanco, err := repositorio.BuscarPorID(publicacaoID)
+	repo := repository.NovoRepositorioDePublicacoes(db)
+	publicacoesSalvaNoBanco, err := repo.BuscarPorID(publicacaoID)
 	if err != nil {
 		utils.Erro(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	if publicacoesSalvaNoBanco.AutorID != usuarioID {
-		utils.Erro(w, http.StatusForbidden, errors.New("Não é possível atualizar uma publicação que não seja sua!"))
+		utils.Erro(w, http.StatusForbidden, errors.New("não é possível atualizar uma publicação que não seja sua"))
 		return
 	}
 
@@ -162,7 +162,7 @@ func AtualizarPublicacao(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = repositorio.Atualizar(publicacaoID, publicacao); err != nil {
+	if err = repo.Atualizar(publicacaoID, publicacao); err != nil {
 		utils.Erro(w, http.StatusInternalServerError, err)
 		return
 	}
@@ -192,19 +192,19 @@ func DeletarPublicacao(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	repositorio := repository.NovoRepositorioDePublicacoes(db)
-	publicacoesSalvaNoBanco, err := repositorio.BuscarPorID(publicacaoID)
+	repo := repository.NovoRepositorioDePublicacoes(db)
+	publicacoesSalvaNoBanco, err := repo.BuscarPorID(publicacaoID)
 	if err != nil {
 		utils.Erro(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	if publicacoesSalvaNoBanco.AutorID != usuarioID {
-		utils.Erro(w, http.StatusForbidden, errors.New("Não é possível deletar uma publicação que não seja sua!"))
+		utils.Erro(w, http.StatusForbidden, errors.New("não é possível deletar uma publicação que não seja sua"))
 		return
 	}
 
-	if err = repositorio.Deletar(publicacaoID); err != nil {
+	if err = repo.Deletar(publicacaoID); err != nil {
 		utils.Erro(w, http.StatusInternalServerError, err)
 		return
 	}
