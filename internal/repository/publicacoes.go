@@ -192,3 +192,25 @@ func (repo Publicacoes) Curtir(publicacaoID uint64) error {
 
 	return nil
 }
+
+// Curtir adiciona uma curtida na publicação.
+func (repo Publicacoes) Descurtir(publicacaoID uint64) error {
+	statement, err := repo.db.Prepare(`
+		update publicacoes set curtidas =
+		case
+			when curtidas > 0 then curtidas - 1
+			else 0
+		end
+		where id = ?
+	`)
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err = statement.Exec(publicacaoID); err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -262,3 +262,28 @@ func CurtirPublicacao(w http.ResponseWriter, r *http.Request) {
 
 	utils.JSON(w, http.StatusNoContent, nil)
 }
+
+// DescurtirPublicacao subtrai uma curtida na publicação de outro usuário.
+func DescurtirPublicacao(w http.ResponseWriter, r *http.Request) {
+	param := mux.Vars(r)
+	publicacaoID, err := strconv.ParseUint(param["publicacaoID"], 10, 64)
+	if err != nil {
+		utils.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := data.Conectar()
+	if err != nil {
+		utils.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repo := repository.NovoRepositorioDePublicacoes(db)
+	if err = repo.Descurtir(publicacaoID); err != nil {
+		utils.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	utils.JSON(w, http.StatusNoContent, nil)
+}
