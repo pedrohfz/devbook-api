@@ -211,3 +211,29 @@ func DeletarPublicacao(w http.ResponseWriter, r *http.Request) {
 
 	utils.JSON(w, http.StatusNoContent, nil)
 }
+
+// BuscarPublicacoesPorUsuario traz todas as publicações de um usuário específico.
+func BuscarPublicacoesPorUsuario(w http.ResponseWriter, r *http.Request) {
+	param := mux.Vars(r)
+	usuarioID, err := strconv.ParseUint(param["usuarioID"], 10, 64)
+	if err != nil {
+		utils.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := data.Conectar()
+	if err != nil {
+		utils.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+	defer db.Close()
+
+	repo := repository.NovoRepositorioDePublicacoes(db)
+	publicacoes, err := repo.BuscarPorUsuario(usuarioID)
+	if err != nil {
+		utils.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	utils.JSON(w, http.StatusOK, publicacoes)
+}

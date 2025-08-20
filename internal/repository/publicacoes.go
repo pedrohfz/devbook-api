@@ -71,7 +71,7 @@ func (repo Publicacoes) BuscarPorID(publicacaoID uint64) (models.Publicacao, err
 }
 
 func (repo Publicacoes) Buscar(usuarioID uint64) ([]models.Publicacao, error) {
-	linhas, erro := repo.db.Query(`
+	linha, erro := repo.db.Query(`
 	select distinct p.*, u.nick from publicacoes p 
 	inner join usuarios u on u.id = p.autor_id 
 	inner join seguidores s on p.autor_id = s.usuario_id 
@@ -82,14 +82,14 @@ func (repo Publicacoes) Buscar(usuarioID uint64) ([]models.Publicacao, error) {
 	if erro != nil {
 		return nil, erro
 	}
-	defer linhas.Close()
+	defer linha.Close()
 
 	var publicacoes []models.Publicacao
 
-	for linhas.Next() {
+	for linha.Next() {
 		var publicacao models.Publicacao
 
-		if erro = linhas.Scan(
+		if erro = linha.Scan(
 			&publicacao.ID,
 			&publicacao.Titulo,
 			&publicacao.Conteudo,
@@ -139,4 +139,39 @@ func (repo Publicacoes) Deletar(publicacaoID uint64) error {
 	}
 
 	return nil
+}
+
+func (repo Publicacoes) BuscarPorUsuario(usuarioID uint64) ([]models.Publicacao, error) {
+	linha, err := repo.db.Query(`
+	select p.*, u.nick from publicacoes p
+	join usuarios u on u.id = p.autor_id
+	where p.autor_id = ?`,
+		usuarioID,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer linha.Close()
+
+	var publicacoes []models.Publicacao
+
+	for linha.Next() {
+		var publicacao models.Publicacao
+
+		if err = linha.Scan(
+			&publicacao.ID,
+			&publicacao.Titulo,
+			&publicacao.Conteudo,
+			&publicacao.AutorID,
+			&publicacao.Curtidas,
+			&publicacao.CriadaEm,
+			&publicacao.AutorNick,
+		); err != nil {
+			return nil, err
+		}
+
+		publicacoes = append(publicacoes, publicacao)
+	}
+
+	return publicacoes, nil
 }
