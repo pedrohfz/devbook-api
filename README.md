@@ -1,7 +1,9 @@
 # 📚 DevBook API
 
-    DevBook API é uma aplicação backend em Go desenvolvida como parte do curso "Aprenda Golang do Zero! Desenvolva uma APLICAÇÃO COMPLETA!" na Udemy.
-    O sistema simula uma rede social para desenvolvedores, permitindo o cadastro de usuários, a criação de publicações e a interação entre seguidores.
+    DevBook API é uma aplicação backend em Go desenvolvida como parte do curso "Aprenda Golang do Zero!
+    Desenvolva uma APLICAÇÃO COMPLETA!" na Udemy.
+    O sistema simula uma rede social para desenvolvedores, permitindo o cadastro de usuários, 
+    a criação de publicações e a interação entre seguidores.
 
 
 ## 📌 Funcionalidades da API
@@ -31,69 +33,69 @@
 
 ## 📦 Tecnologias e Pacotes Utilizados
 
-    [Go] → Linguagem principal da API
-    [Mux] → Router HTTP 
-    [MySQL] → Banco de dados relacional
-    [GoDotEnv] → Gerencimanto de variáveis de ambiente
-    [Bcrypt] → Criptografia de senhas
-    [JWT Go] → Implementação de JSON Web Tokens
-    [CheckMail] → Validação de e-mail dos usuários
+    [Go] → Linguagem utilizada no desenvolvimento da API
+    [Mux] → Router HTTP para manipulação de rotas de forma simples e flexível
+    [MySQL] → Banco de dados relacional utilizado para persistência dos dados da aplicação
+    [GoDotEnv] → Carrega variáveis de ambiente do arquivo .env, facilitando a configuração e segurança
+    [Bcrypt] → Algoritmo de hash seguro usado para criptografar senhas antes de armazená-las no banco
+    [JWT Go] → Implementação de JSON Web Tokens para autenticação e autorização de usuários
+    [CheckMail] → Pacote para validação de e-mails, garantindo consistência nos cadastros de usuários.
 
 ## 📂 Estrutura do Projeto
 
-    devbook-api/                        # Raiz do projeto
+    devbook-api/                                # Raiz do projeto
     │
-    │── internal/                       # Código privado do projeto
+    │── internal/                               # Código privado do projeto
     │   │
-    │   │── auth/                       # Módulo de autenticação JWT
-    │   │   └── auth.go                 # Funções principais de autenticação (validação de token)
+    │   │── auth/                               # Módulo de autenticação JWT
+    │   │   └── auth.go                         # Funções principais de autenticação (validação de token)
     │   │
-    │   │── config/                     # Configurações específicas
-    │   │   └── config.go               # Carregamento de configs (.env)
+    │   │── config/                             # Configurações específicas
+    │   │   └── config.go                       # Carregamento de configs (.env)
     │   │
-    │   │── data/                       # Conexão com o Banco de Dados
-    │   │   └── data.go                 # Função principal de conexão
+    │   │── data/                               # Conexão com o Banco de Dados
+    │   │   └── data.go                         # Função principal de conexão
     │   │
-    │   │── middlewares/                # Middlewares internos
-    │   │   └── middlewares.go          # Definição de middlewares globais
+    │   │── middlewares/                        # Middlewares internos
+    │   │   └── middlewares.go                  # Definição de middlewares globais
     │   │
-    │   │── repository/                 # Regras de persistência (DAO)
-    │   │   │── publicacoes.go          # Consulta e operações de banco para publicações.
-    │   │   └── usuarios.go             # Consulta e operações de banco para usuários.
+    │   │── repository/                         # Regras de persistência (DAO)
+    │   │   │── publicacoes.go                  # Consulta e operações de banco para publicações.
+    │   │   └── usuarios.go                     # Consulta e operações de banco para usuários.
     │   │
-    │   └── security/                   # Módelo de segurança bcrypt
-    │       └── security.go             # Funções para hashing de senha
+    │   └── security/                           # Módelo de segurança bcrypt
+    │       └── security.go                     # Funções para hashing de senha
     │
-    │── pkg/                            # Código público do projeto
+    │── pkg/                                    # Código público do projeto
     │   │
-    │   │── controllers/                # Controladores: lógica de entrada (camada HTTP)
-    │   │   │── login.go                # Controller responsável por login/autenticação
-    │   │   │── publicacoes.go          # Controller para operações com publicações
-    │   │   └── usuarios.go             # Controller para operações com usuários
+    │   │── controllers/                        # Controladores: lógica de entrada (camada HTTP)
+    │   │   │── login.go                        # Controller responsável por login/autenticação
+    │   │   │── publicacoes.go                  # Controller para operações com publicações
+    │   │   └── usuarios.go                     # Controller para operações com usuários
     │   │
-    │   │── models/                     # Estruturas e modelos de dados
-    │   │   │── Publicacoes.go          # Struct de "Publicações"
-    │   │   │── Senha.go                # Struct de "Senha"
-    │   │   └── Usuario.go              # Struct de "Usuário"
+    │   │── models/                             # Estruturas e modelos de dados
+    │   │   │── Publicacoes.go                  # Struct de "Publicações"
+    │   │   │── Senha.go                        # Struct de "Senha"
+    │   │   └── Usuario.go                      # Struct de "Usuário"
     │   │
-    │   │── routes/                     # Definição das rotas
-    │   │   │── rotas/                  # Agrupamento de rotas por domínio
-    │   │   │   │── login.go            # Rota de Login
-    │   │   │   │── publicacoes.go      # Rotas relacionadas a publicações
-    │   │   │   │── rotas.go            # Registro central de rotas
-    │   │   │   └── usuarios.go         # Rotas relacionadas a usuários
-    │   │   └── router.go               # Inicialização e configuração do roteador principal
+    │   │── routes/                             # Definição das rotas
+    │   │   │── rotas/                          # Agrupamento de rotas por domínio
+    │   │   │   │── login.go                    # Rota de Login
+    │   │   │   │── publicacoes.go              # Rotas relacionadas a publicações
+    │   │   │   │── rotas.go                    # Registro central de rotas
+    │   │   │   └── usuarios.go                 # Rotas relacionadas a usuários
+    │   │   └── router.go                       # Inicialização e configuração do roteador principal
     │   │
-    │   └── utils/                      # Funções utilitárias
-    │       └── response.go             # Helper para padronizar respostas HTTP
+    │   └── utils/                              # Funções utilitárias
+    │       └── response.go                     # Helper para padronizar respostas HTTP
     │
-    │── sql/                            # Scripts SQL
-    │   └── data.sql                    # Script de criação e população inicial do banco
+    │── sql/                                    # Scripts SQL
+    │   └── data.sql                            # Script de criação e população inicial do banco
     │
-    │── .env                            # Variáveis de ambiente
-    │── go.mod                          # Dependências do Go
-    │── go.sum                          # Hash das dependências
-    └── main.go                         # Ponto de entrada da aplicação
+    │── .env                                    # Variáveis de ambiente
+    │── go.mod                                  # Dependências do Go
+    │── go.sum                                  # Hash das dependências
+    └── main.go                                 # Ponto de entrada da aplicação
 
 ## 📎 Autor
 
@@ -103,4 +105,4 @@
 ## 📄 Licença
 
     Este projeto é de uso educacional, sem fins comerciais.  
-    Sinta-se à vontade para utilizar como referência em seus estudos 🚀
+    Sinta-se à vontade para utilizar como referência em seus estudos! 🚀
